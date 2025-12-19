@@ -1,0 +1,12 @@
+# 1. API Anahtarı Alın
+# Şu adresten ücretsiz bir Gemini API anahtarı oluşturun:
+# https://aistudio.google.com/app/apikey
+
+# 2. .env.local Dosyası Oluşturun
+# Projenin ana klasöründe (Tini Website) yeni bir dosya oluşturun ve adını tam olarak şöyle yapın:
+# .env.local
+
+# 3. Anahtarı Yapıştırın
+# Dosyanın içine şu satırı ekleyin (YOUR_KEY_HERE yerine kendi kodunuzu yapıştırın):
+
+GOOGLE_BANANA_API_KEY=AIzaSy...

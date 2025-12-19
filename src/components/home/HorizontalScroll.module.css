@@ -1,0 +1,296 @@
+.section {
+    padding: var(--spacing-3xl) 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.carouselWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.title {
+    padding-left: 5%;
+    margin-bottom: var(--spacing-xl);
+    font-size: 2.5rem;
+}
+
+
+.scrollContainer {
+    display: flex;
+    gap: var(--spacing-xl);
+    overflow-x: hidden;
+    /* Hide scrollbar completely */
+    padding: 0 5%;
+    padding-bottom: var(--spacing-xl);
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.navButton {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #d4af37;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8B6508;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.navButton:hover {
+    background: #8B6508;
+    color: white;
+    box-shadow: 0 8px 25px rgba(184, 134, 11, 0.4);
+}
+
+.prevButton {
+    left: 20px;
+}
+
+.nextButton {
+    right: 20px;
+}
+
+
+.scrollContainer::-webkit-scrollbar {
+    display: none;
+}
+
+@keyframes borderFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes textShine {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.card {
+    min-width: 300px;
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    cursor: pointer;
+    transition: transform var(--transition-base);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+.imageWrapper {
+    width: 100%;
+    aspect-ratio: 3/4;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background-color: #fff;
+
+    /* SHIMMER BORDER - Thinner version (2px) */
+    padding: 2px;
+    background-size: 300% 300%;
+    animation: borderFlow 15s linear infinite;
+    transition: all var(--transition-base);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Color Frames - Mapped from 'color' property */
+.card[data-color="sarı"] .imageWrapper,
+.card[data-color="karışık"] .imageWrapper {
+    background-image: linear-gradient(45deg, #996515, #ffd700, #fcf6ba, #d4af37, #996515);
+}
+
+.card[data-color="beyaz"] .imageWrapper {
+    background-image: linear-gradient(45deg, #757575, #e0e0e0, #ffffff, #a0a0a0, #757575);
+}
+
+.card[data-color="pembe"] .imageWrapper {
+    background-image: linear-gradient(45deg, #b76e79, #e0bfb8, #ffffff, #e0bfb8, #b76e79);
+}
+
+.card[data-color="siyah"] .imageWrapper {
+    background-image: linear-gradient(45deg, #000000, #434343, #2c3e50, #000000);
+}
+
+/* Hover Shimmers */
+.card[data-color="sarı"]:hover .imageWrapper,
+.card[data-color="karışık"]:hover .imageWrapper {
+    box-shadow: 0 20px 50px rgba(212, 175, 55, 0.4);
+}
+
+.card[data-color="beyaz"]:hover .imageWrapper {
+    box-shadow: 0 20px 50px rgba(165, 169, 180, 0.4);
+}
+
+.card[data-color="pembe"]:hover .imageWrapper {
+    box-shadow: 0 20px 50px rgba(224, 191, 184, 0.4);
+}
+
+.card[data-color="siyah"]:hover .imageWrapper {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.innerWrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: calc(var(--radius-md) - 2px);
+    background-color: var(--color-bg-subtle);
+    position: relative;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s ease;
+}
+
+.card:hover .image {
+    transform: scale(1.08);
+    /* Sophisticated zoom */
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-xs) 0;
+    text-align: center;
+}
+
+.collectionTitle {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: all var(--transition-base);
+}
+
+/* Color Title Styling */
+.card[data-color="sarı"] .collectionTitle,
+.card[data-color="karışık"] .collectionTitle {
+    background-image: linear-gradient(135deg, #8B6508 0%, #B8860B 25%, #FFD700 50%, #B8860B 75%, #8B6508 100%);
+    -webkit-text-fill-color: transparent;
+    animation: textShine 8s linear infinite;
+}
+
+.card[data-color="beyaz"] .collectionTitle {
+    background-image: linear-gradient(135deg, #757575 0%, #e0e0e0 25%, #ffffff 50%, #e0e0e0 75%, #4a4a4a 100%);
+    -webkit-text-fill-color: transparent;
+    animation: textShine 8s linear infinite;
+}
+
+.card[data-color="pembe"] .collectionTitle {
+    background-image: linear-gradient(135deg, #b76e79 0%, #e0bfb8 25%, #ffffff 50%, #e0bfb8 75%, #b76e79 100%);
+    -webkit-text-fill-color: transparent;
+    animation: textShine 10s linear infinite;
+}
+
+.card[data-color="siyah"] .collectionTitle {
+    background-image: linear-gradient(135deg, #000000 0%, #434343 50%, #000000 100%);
+    -webkit-text-fill-color: transparent;
+    animation: textShine 8s linear infinite;
+}
+
+.explore {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Color Explore Text */
+.card[data-color="sarı"] .explore,
+.card[data-color="karışık"] .explore {
+    color: #b8860b;
+}
+
+.card[data-color="beyaz"] .explore {
+    color: #757575;
+}
+
+.card[data-color="pembe"] .explore {
+    color: #b76e79;
+}
+
+.card[data-color="siyah"] .explore {
+    color: #333;
+}
+
+/* OUT OF STOCK STYLING */
+.outOfStockCard .image {
+    /* Filters removed to keep image clear as requested */
+    opacity: 0.9;
+}
+
+.outOfStockOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(1px);
+    z-index: 5;
+}
+
+.outOfStockOverlay span {
+    background: linear-gradient(135deg, #8B6508, #B8860B);
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.outOfStockCard .collectionTitle,
+.outOfStockCard .explore {
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .card {
+        min-width: 280px;
+        width: 80vw;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+}

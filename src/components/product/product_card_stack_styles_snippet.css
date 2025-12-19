@@ -1,0 +1,144 @@
+/* Navigation Controls */
+.controls {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 650px;
+    /* Increased from 500px to move buttons further away */
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* Elegant Sparkly Theme */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    /* Soft Gold/Rose Glow */
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, rgba(255, 182, 193, 0.05) 50%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(40px);
+}
+
+.card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    background-color: #fff;
+    /* Eliminate Shadow */
+    box-shadow: none !important;
+    cursor: grab;
+    overflow: hidden;
+    transform-origin: bottom center;
+    /* Elegant Gold/Metallic Border */
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    transition: border-color 0.3s ease;
+}
+
+.card:hover {
+    border-color: rgba(212, 175, 55, 0.6);
+}
+
+/* Sheen Effect for Active Card */
+.card:active::after {
+    opacity: 0.4;
+}
+
+/* Subtle Sheen Shine */
+.shineEffect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right,
+            transparent 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            transparent 100%);
+    transform: skewX(-25deg);
+    animation: shine 4s infinite ease-in-out;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.5;
+    }
+
+    40%,
+    100% {
+        left: 200%;
+        opacity: 0;
+    }
+}
+
+/* Sparkle Particles - will be used as divs in TSX */
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px 2px rgba(255, 223, 0, 0.6);
+    animation: twinkle 3s infinite ease-in-out;
+    z-index: 50;
+    pointer-events: none;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        transform: scale(0.5);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Adjust Arrow Style for Elegance */
+.arrowBtn {
+    pointer-events: auto;
+    width: 56px;
+    /* Slightly larger */
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    /* Gold border */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #555;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+    /* Gold shadow */
+}
+
+.arrowBtn:hover {
+    transform: scale(1.1);
+    background: #fff;
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+    color: #d4af37;
+    /* Gold text */
+}

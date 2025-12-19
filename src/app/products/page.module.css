@@ -1,0 +1,98 @@
+.page {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-3xl);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@keyframes textShine {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.title {
+    font-size: 3rem;
+    font-family: var(--font-heading);
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, #8B6508 0%, #B8860B 25%, #FFD700 50%, #B8860B 75%, #8B6508 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShine 8s linear infinite;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #b8860b;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.filters {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(184, 134, 11, 0.2);
+    overflow-x: auto;
+    align-items: center;
+}
+
+.filterBtn {
+    padding: 0.6rem 1.5rem;
+    border-radius: var(--radius-full);
+    border: 1px solid #b8860b;
+    color: #b8860b;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    background: transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filterBtn:hover,
+.filterBtn.active {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    color: white;
+    border-color: #d4af37;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--spacing-md);
+    row-gap: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: var(--spacing-lg);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

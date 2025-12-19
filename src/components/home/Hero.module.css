@@ -1,0 +1,208 @@
+.hero {
+    position: relative;
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding-top: 80px;
+    background-image: url('/assets/images/hero-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Background Animation Placeholder or Blur */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 60%);
+    animation: rotateBg 60s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotateBg {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.5) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.content {
+    max-width: 1000px;
+    padding: var(--spacing-md);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+/* Animations from Product Page */
+@keyframes textShine {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.title {
+    font-family: var(--font-playfair);
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-md);
+    opacity: 0;
+    animation: fadeInUp 1s ease forwards 0.3s;
+}
+
+.goldText {
+    background: linear-gradient(135deg, #8B6508 0%, #B8860B 25%, #FFD700 50%, #B8860B 75%, #8B6508 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShine 8s linear infinite;
+}
+
+.silverText {
+    font-weight: 700;
+    background: linear-gradient(135deg, #4a4a4a 0%, #7a7a7a 25%, #a0a0a0 50%, #7a7a7a 75%, #4a4a4a 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShine 8s linear infinite;
+}
+
+/* Subtitle and Buttons removed from TSX */
+
+/* Button Shimmers */
+@keyframes uiShine {
+    0% {
+        left: -100%;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.5;
+    }
+
+    40%,
+    100% {
+        left: 200%;
+        opacity: 0;
+    }
+}
+
+.primaryBtn,
+.secondaryBtn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Gold Button Style Override if needed, but assuming variant handles base color. 
+   If not, we force it here for consistency. */
+.primaryBtn {
+    background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.primaryBtn:hover {
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+    transform: translateY(-2px);
+}
+
+.secondaryBtn {
+    border: 1px solid #B8860B;
+    color: #B8860B;
+    background: transparent;
+    font-weight: 600;
+}
+
+.secondaryBtn:hover {
+    background: rgba(184, 134, 11, 0.1);
+    border-color: #ffd700;
+    color: #8B6508;
+}
+
+
+.primaryBtn::after,
+.secondaryBtn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    transform: skewX(-25deg);
+    animation: uiShine 6s infinite ease-in-out;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 3rem;
+    }
+
+    .hero {
+        height: 80vh;
+        padding-top: 60px;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+}

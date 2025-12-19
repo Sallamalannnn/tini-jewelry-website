@@ -1,0 +1,74 @@
+:root {
+    /* Brand Colors - Gold Focus */
+    --color-primary: #D4AF37;
+    /* Primary Gold */
+    --color-primary-light: #E5C563;
+    --color-accent: #B8860B;
+    /* Deep Gold */
+    --color-accent-light: #D4AF37;
+
+    /* Material Colors */
+    --color-material-gold: #D4AF37;
+    --color-material-silver: #A5A9B4;
+    --color-material-rose-gold: #E0BFB8;
+    --color-material-white-gold: #E5E4E2;
+    --color-material-platinum: #E5E4E2;
+    --color-material-steel: #71706E;
+
+
+    /* Backgrounds */
+    --color-bg-body: #F9F7F2;
+    /* Cream/Off-white */
+    --color-bg-surface: #FFFFFF;
+    --color-bg-subtle: #F0EBE5;
+
+    /* Text - Gold/Brown Focus */
+    --color-text-main: #4A3B32;
+    /* Dark Deep Brown for contrast */
+    --color-text-muted: #8B6508;
+    /* Darker Gold */
+    --color-text-inverse: #FFFFFF;
+
+
+    /* Borders */
+    --color-border: #E6E0DA;
+    --color-border-active: #D4AF37;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    /* 4px */
+    --spacing-sm: 0.5rem;
+    /* 8px */
+    --spacing-md: 1rem;
+    /* 16px */
+    --spacing-lg: 1.5rem;
+    /* 24px */
+    --spacing-xl: 2rem;
+    /* 32px */
+    --spacing-2xl: 3rem;
+    /* 48px */
+    --spacing-3xl: 5rem;
+    /* 80px */
+
+    /* Typography */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+
+    /* Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 300ms ease;
+}
+
+/* Dark Mode (Optional Support - Future) */
+/* @media (prefers-color-scheme: dark) {} */

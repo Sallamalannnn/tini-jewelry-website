@@ -1,0 +1,37 @@
+/* Extends existing styles but overrides for improved card layout with text inputs */
+
+.imageGrid {
+    display: grid;
+    /* Increase min width to accommodate inputs comfortably */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.imagePreview {
+    /* Remove aspect-ratio: 1 to allow height to grow based on content */
+    aspect-ratio: auto;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Image container inside preview */
+.imagePreviewWrapper {
+    width: 100%;
+    aspect-ratio: 1;
+    /* Keep image square */
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.imageUploadBtn {
+    aspect-ratio: 1;
+    /* Keep the upload button square */
+    min-height: 200px;
+}

@@ -47,7 +47,7 @@ export default function DynamicThreeBg({ imageUrl }: { imageUrl: string | null }
             pointerEvents: 'none',
             overflow: 'hidden'
         }}>
-            <Canvas camera={{ position: [0, 0, 5], fov: 75 }} alpha>
+            <Canvas camera={{ position: [0, 0, 5], fov: 75 }} gl={{ alpha: true }}>
                 <ambientLight intensity={1.5} />
                 <pointLight position={[10, 10, 10]} intensity={2} />
                 <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} />

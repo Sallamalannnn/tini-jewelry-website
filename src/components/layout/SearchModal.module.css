@@ -1,9 +1,11 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.001);
+    /* Ensure click capture */
     backdrop-filter: blur(10px);
     z-index: 2147483647;
+    pointer-events: auto;
     display: flex;
     align-items: center;
     justify-content: center;

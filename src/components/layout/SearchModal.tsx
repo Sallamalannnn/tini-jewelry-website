@@ -64,7 +64,7 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
 
     return (
         <div className={styles.overlay} onClick={onClose}>
-            <div className={styles.modal}>
+            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <button className={styles.closeBtn} onClick={onClose}>
                     <X size={32} strokeWidth={1} />
                 </button>

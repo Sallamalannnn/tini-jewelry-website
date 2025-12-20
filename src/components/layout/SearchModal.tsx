@@ -64,7 +64,7 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
 
     return (
         <div className={styles.overlay} onClick={onClose}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modal}>
                 <button className={styles.closeBtn} onClick={onClose}>
                     <X size={32} strokeWidth={1} />
                 </button>
@@ -79,7 +79,11 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                             className={styles.input}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
+                            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking input
                         />
+                        <button type="button" className={styles.inputCloseBtn} onClick={onClose}>
+                            <X size={24} />
+                        </button>
                         <button type="submit" className={styles.searchBtn}>
                             <SearchIcon size={24} />
                         </button>

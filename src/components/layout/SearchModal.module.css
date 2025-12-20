@@ -78,7 +78,22 @@
     border: none;
     color: var(--color-primary);
     cursor: pointer;
-    padding: 0 1rem;
+    padding: 0 0 0 1rem;
+}
+
+.inputCloseBtn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s;
+}
+
+.inputCloseBtn:hover {
+    color: var(--color-primary);
 }
 
 .suggestions {

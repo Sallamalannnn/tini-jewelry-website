@@ -25,7 +25,7 @@ const MOCK_WISHLIST = [
 
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { getUserOrders, createOrder, Order } from '@/lib/orderStore';
+import { getUserOrders, createOrder, Order, createReturnRequest } from '@/lib/orderStore';
 
 type TabType = 'orders' | 'addresses' | 'payments' | 'wishlist' | 'profile';
 
@@ -76,22 +76,29 @@ export default function AccountPage() {
     }, [user]);
 
     const handleCreateTestOrder = async () => {
-        if (!user) return;
+        if (!user) {
+            alert('Lütfen önce giriş yapın.');
+            return;
+        }
         try {
-            await createOrder({
+            console.log('Test siparişi oluşturuluyor...', user.uid);
+            const orderId = await createOrder({
                 userId: user.uid,
                 total: 2500,
                 status: 'Hazırlanıyor',
                 items: [{ id: '1', name: 'Test Ürünü - Altın Kolye', price: 2500, quantity: 1 }],
                 shippingAddress: { title: 'Ev', address: 'Test Adresi', city: 'İstanbul', zip: '34000' }
             });
+            console.log('Sipariş oluşturuldu, ID:', orderId);
+
             // Refresh orders
+            console.log('Siparişler güncelleniyor...');
             const userOrders = await getUserOrders(user.uid);
             setOrders(userOrders);
             alert('Test siparişi oluşturuldu! Siparişlerim sekmesini kontrol edin.');
         } catch (error) {
-            console.error(error);
-            alert('Sipariş oluşturulamadı.');
+            console.error('Sipariş Hatası:', error);
+            alert('Sipariş oluşturulamadı. Detaylar için konsola bakın.');
         }
     };
 
@@ -456,22 +463,39 @@ export default function AccountPage() {
                                 </p>
                             </div>
 
-                            <form onSubmit={(e) => {
+                            <form onSubmit={async (e) => {
                                 e.preventDefault();
+                                const formData = new FormData(e.currentTarget);
+                                const reason = formData.get('reason') as string;
+                                const details = formData.get('details') as string;
+
                                 setIsSubmittingReturn(true);
 
-                                // Simulate API call and Email Sending
-                                setTimeout(() => {
+                                try {
+                                    if (!selectedOrderId || !user) return;
+
+                                    await createReturnRequest({
+                                        orderId: selectedOrderId,
+                                        userId: user.uid,
+                                        reason,
+                                        details
+                                    });
+
                                     setIsSubmittingReturn(false);
-                                    // Generating a random mock return code
-                                    const mockReturnCode = 'SHOP-' + Math.floor(100000 + Math.random() * 900000);
-                                    alert(`Talebiniz Onaylandı!\n\nİade Kargo Kodunuz: ${mockReturnCode}\n\nBu kod ayrıca kayıtlı e-posta adresinize gönderilmiştir.`);
+                                    alert(`Talebiniz Kaydedildi!\n\nShopier üzerinden iade kargo kodunuz oluşturulup size iletilecektir. Takip numaranızı e-posta adresinizden kontrol edebilirsiniz.`);
+
+                                    // Refresh the list to show new status
+                                    const userOrders = await getUserOrders(user.uid);
+                                    setOrders(userOrders);
                                     setShowReturnModal(false);
-                                }, 2000);
+                                } catch (error) {
+                                    setIsSubmittingReturn(false);
+                                    alert('Talebiniz iletilemedi. Lütfen tekrar deneyin.');
+                                }
                             }}>
                                 <div className={styles.field} style={{ marginBottom: '1rem' }}>
                                     <label>İade Nedeni</label>
-                                    <select className={styles.select} required defaultValue="">
+                                    <select name="reason" className={styles.select} required defaultValue="">
                                         <option value="" disabled>Seçiniz</option>
                                         <option value="vazgectim">Vazgeçtim</option>
                                         <option value="beden">Beden Uymadı</option>
@@ -483,6 +507,7 @@ export default function AccountPage() {
                                 <div className={styles.field} style={{ marginBottom: '1rem' }}>
                                     <label>Ek Açıklama (Opsiyonel)</label>
                                     <textarea
+                                        name="details"
                                         className={styles.textarea}
                                         placeholder="Ürün durumu hakkında bilgi verebilirsiniz..."
                                     ></textarea>

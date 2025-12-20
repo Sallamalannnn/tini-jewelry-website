@@ -158,6 +158,21 @@
     color: #ef6c00;
 }
 
+.hazirlaniyor {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.iadetalebi {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.iptaledildi {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
 .orderDetails {
     display: flex;
     flex-direction: column;

@@ -173,9 +173,20 @@ export const deleteProduct = async (id: string) => {
     await firestoreDeleteProduct(id);
 };
 
-// Stock Notification Request
-export const requestStockNotification = async (email: string, productId: string, productName: string) => {
-    const { firestoreAddStockNotification } = await import('./firestore');
-    await firestoreAddStockNotification(email, productId, productName);
+// Search products by name, category, or description
+export const searchProducts = async (query: string): Promise<Product[]> => {
+    if (!query || query.trim().length < 2) return [];
+
+    const allProducts = await getProducts();
+    const normalizedQuery = query.toLowerCase().trim();
+
+    return allProducts.filter(product => {
+        const nameMatch = product.name?.toLowerCase().includes(normalizedQuery);
+        const categoryMatch = product.category?.toLowerCase().includes(normalizedQuery);
+        const colorMatch = product.color?.toLowerCase().includes(normalizedQuery);
+        const materialMatch = product.material?.toLowerCase().includes(normalizedQuery);
+
+        return nameMatch || categoryMatch || colorMatch || materialMatch;
+    });
 };
 

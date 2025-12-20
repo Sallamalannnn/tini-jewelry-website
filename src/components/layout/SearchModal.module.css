@@ -110,6 +110,99 @@
     border-color: var(--color-primary);
 }
 
+.resultsContainer {
+    margin-top: 3rem;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.resultsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.resultItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.resultItem:hover {
+    transform: translateY(-5px);
+}
+
+.resultImage {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #111;
+}
+
+.resultImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.resultItem:hover .resultImage img {
+    opacity: 1;
+}
+
+.resultInfo {
+    text-align: left;
+}
+
+.resultName {
+    color: #fff;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.resultPrice {
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.viewAllBtn {
+    background: none;
+    border: 1px solid rgba(184, 134, 11, 0.3);
+    color: var(--color-primary);
+    padding: 0.8rem 2rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.viewAllBtn:hover {
+    background: var(--color-primary);
+    color: #000;
+}
+
+.noResults {
+    margin-top: 4rem;
+    color: #666;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .resultsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

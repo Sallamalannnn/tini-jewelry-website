@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
-import { MapPin, CreditCard, Heart, ShoppingBag, Settings, LogOut, Package, Plus, RefreshCcw, X, Info } from 'lucide-react';
+import { MapPin, CreditCard, Heart, ShoppingBag, Settings, LogOut, Package, Plus, RefreshCcw, X, Info, Truck } from 'lucide-react';
 
 // Mock Data
 const MOCK_ORDERS = [
-    { id: 'SIP-1001', date: '15 Kasım 2023', total: 8500, status: 'Teslim Edildi' },
-    { id: 'SIP-1025', date: '2 Aralık 2023', total: 4200, status: 'Kargoda' },
+    { id: 'SIP-1001', date: '15 Kasım 2023', total: 8500, status: 'Teslim Edildi', shippingCode: '324098234' },
+    { id: 'SIP-1025', date: '2 Aralık 2023', total: 4200, status: 'Kargoda', shippingCode: '782342342' },
 ];
 
 const MOCK_ADDRESSES = [
@@ -159,6 +159,12 @@ export default function AccountPage() {
                                                 <span>{order.date}</span>
                                                 <span>{order.total.toLocaleString('tr-TR')} ₺</span>
                                             </div>
+                                            {order.shippingCode && (
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#0066cc', backgroundColor: '#f0f7ff', padding: '4px 8px', borderRadius: '4px' }}>
+                                                    <Truck size={14} />
+                                                    <span>Kargo Kodu: <strong>{order.shippingCode}</strong></span>
+                                                </div>
+                                            )}
                                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                                                 <Button
                                                     variant="outline"
@@ -413,12 +419,14 @@ export default function AccountPage() {
                                 e.preventDefault();
                                 setIsSubmittingReturn(true);
 
-                                // Simulate API call
+                                // Simulate API call and Email Sending
                                 setTimeout(() => {
                                     setIsSubmittingReturn(false);
-                                    alert(`Talebiniz alınmıştır! Shopier üzerinden iade kargo kodunuz oluşturulup size iletilecektir.`);
+                                    // Generating a random mock return code
+                                    const mockReturnCode = 'SHOP-' + Math.floor(100000 + Math.random() * 900000);
+                                    alert(`Talebiniz Onaylandı!\n\nİade Kargo Kodunuz: ${mockReturnCode}\n\nBu kod ayrıca kayıtlı e-posta adresinize gönderilmiştir.`);
                                     setShowReturnModal(false);
-                                }, 1500);
+                                }, 2000);
                             }}>
                                 <div className={styles.field} style={{ marginBottom: '1rem' }}>
                                     <label>İade Nedeni</label>

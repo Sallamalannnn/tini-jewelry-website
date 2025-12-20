@@ -186,13 +186,42 @@ const normalizeForSearch = (text: string) => {
         .replace(/ç/g, 'c');
 };
 
-// Search products by name, category, or description with fuzzy scoring
+// Basic Synonym/Root Map for "Smart" Search without AI
+const SEARCH_SYNONYMS: Record<string, string[]> = {
+    'zarafet': ['zarif', 'ince', 'kibar', 'zerafet'], // 'zerafet' is common typo
+    'zerafet': ['zarif', 'zarafet'],
+    'zarif': ['zarafet', 'ince', 'kibar'],
+    'sik': ['siklik', 'guzel', 'modern', 'moda', 'trend'], // normalized 'şık'
+    'siklik': ['sik', 'guzel'],
+    'altin': ['gold', 'sari', '14k', '22k'],
+    'gold': ['altin', 'sari'],
+    'gumus': ['silver', 'gri', 'beyaz', '925'],
+    'silver': ['gumus'],
+    'kolye': ['zincir', 'gerdanlik', 'ucu'],
+    'gerdanlik': ['kolye'],
+    'takim': ['set'],
+    'set': ['takim'],
+    'hediye': ['armagan', 'ozel'],
+    'tas': ['pirlanta', 'zirkon', 'swarovski'],
+    'dogal': ['naturel', 'gercek']
+};
+
+// Search products by name, category, or description with fuzzy scoring and synonym expansion
 export const searchProducts = async (query: string): Promise<Product[]> => {
     if (!query || query.trim().length < 2) return [];
 
     const allProducts = await getProducts();
     const normalizedQuery = normalizeForSearch(query.trim());
-    const queryTokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
+    const initialTokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
+
+    // Expand search tokens with synonyms
+    const searchTokens = new Set<string>(initialTokens);
+    initialTokens.forEach(token => {
+        const synonyms = SEARCH_SYNONYMS[token];
+        if (synonyms) {
+            synonyms.forEach(syn => searchTokens.add(syn));
+        }
+    });
 
     const scoredProducts = allProducts.map(product => {
         let score = 0;
@@ -202,15 +231,23 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
         const pMaterial = normalizeForSearch(product.material || '');
 
         // Check for exact phrase match (highest bonus)
-        if (pName.includes(normalizedQuery)) score += 10;
-        if (pCategory.includes(normalizedQuery)) score += 8;
+        if (pName.includes(normalizedQuery)) score += 20;
+        if (pCategory.includes(normalizedQuery)) score += 15;
 
-        // Check each token
-        queryTokens.forEach(token => {
-            if (pName.includes(token)) score += 4;
-            if (pCategory.includes(token)) score += 3;
-            if (pColor.includes(token)) score += 2;
-            if (pMaterial.includes(token)) score += 2;
+        // Check each expanded token
+        searchTokens.forEach(token => {
+            let tokenScore = 0;
+            if (pName.includes(token)) tokenScore += 5;
+            if (pCategory.includes(token)) tokenScore += 4;
+            if (pColor.includes(token)) tokenScore += 3;
+            if (pMaterial.includes(token)) tokenScore += 3;
+
+            // Reduce score slightly if it matched via a synonym (original tokens present in query)
+            if (!initialTokens.includes(token)) {
+                tokenScore = Math.ceil(tokenScore * 0.7); // 70% weight for synonyms
+            }
+
+            score += tokenScore;
         });
 
         return { product, score };

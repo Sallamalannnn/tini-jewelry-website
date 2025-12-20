@@ -19,14 +19,23 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     const router = useRouter();
 
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
+        if (!isOpen) {
             setQuery('');
             setResults([]);
         }
-    }, [isOpen]);
+
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+
+        if (isOpen) {
+            window.addEventListener('keydown', handleEsc);
+        }
+
+        return () => {
+            window.removeEventListener('keydown', handleEsc);
+        };
+    }, [isOpen, onClose]);
 
     useEffect(() => {
         const timer = setTimeout(async () => {

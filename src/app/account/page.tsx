@@ -5,11 +5,8 @@ import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
 import { MapPin, CreditCard, Heart, ShoppingBag, Settings, LogOut, Package, Plus, RefreshCcw, X, Info, Truck } from 'lucide-react';
 
-// Mock Data
-const MOCK_ORDERS = [
-    { id: 'SIP-1001', date: '15 Kasım 2023', total: 8500, status: 'Teslim Edildi', shippingCode: '324098234' },
-    { id: 'SIP-1025', date: '2 Aralık 2023', total: 4200, status: 'Kargoda', shippingCode: '782342342' },
-];
+// Mock Data (Removed in favor of Real Data, but keeping struct for reference if needed)
+// const MOCK_ORDERS = ...
 
 const MOCK_ADDRESSES = [
     { id: 1, title: 'Ev Adresim', address: 'Atatürk Cad. No:123 Daire:4, Çankaya, Ankara', phone: '0555 123 45 67' },
@@ -28,6 +25,7 @@ const MOCK_WISHLIST = [
 
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { getUserOrders, createOrder, Order } from '@/lib/orderStore';
 
 type TabType = 'orders' | 'addresses' | 'payments' | 'wishlist' | 'profile';
 
@@ -35,6 +33,10 @@ export default function AccountPage() {
     const { user, userData, logout, loading, addAddress, updateAddress, deleteAddress } = useAuth();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<TabType>('orders');
+
+    // Real Orders State
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [loadingOrders, setLoadingOrders] = useState(true);
 
     // Address management state
     const [isAddingAddress, setIsAddingAddress] = useState(false);
@@ -59,6 +61,39 @@ export default function AccountPage() {
             router.push('/login');
         }
     }, [user, loading, router]);
+
+    // Fetch Orders when User is ready
+    useEffect(() => {
+        const fetchOrders = async () => {
+            if (user?.uid) {
+                setLoadingOrders(true);
+                const userOrders = await getUserOrders(user.uid);
+                setOrders(userOrders);
+                setLoadingOrders(false);
+            }
+        };
+        fetchOrders();
+    }, [user]);
+
+    const handleCreateTestOrder = async () => {
+        if (!user) return;
+        try {
+            await createOrder({
+                userId: user.uid,
+                total: 2500,
+                status: 'Hazırlanıyor',
+                items: [{ id: '1', name: 'Test Ürünü - Altın Kolye', price: 2500, quantity: 1 }],
+                shippingAddress: { title: 'Ev', address: 'Test Adresi', city: 'İstanbul', zip: '34000' }
+            });
+            // Refresh orders
+            const userOrders = await getUserOrders(user.uid);
+            setOrders(userOrders);
+            alert('Test siparişi oluşturuldu! Siparişlerim sekmesini kontrol edin.');
+        } catch (error) {
+            console.error(error);
+            alert('Sipariş oluşturulamadı.');
+        }
+    };
 
     if (loading || !user) {
         return <div className="container" style={{ padding: '4rem', textAlign: 'center' }}>Yükleniyor...</div>;
@@ -144,19 +179,25 @@ export default function AccountPage() {
                     {/* Orders Section */}
                     {activeTab === 'orders' && (
                         <div className={styles.section}>
-                            <h2 className={styles.sectionTitle}>Sipariş Geçmişi</h2>
-                            {MOCK_ORDERS.length > 0 ? (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h2 className={styles.sectionTitle}>Sipariş Geçmişi</h2>
+                                <Button size="sm" variant="outline" onClick={handleCreateTestOrder} style={{ fontSize: '0.7rem' }}>+ Test Siparişi Ekle</Button>
+                            </div>
+
+                            {loadingOrders ? (
+                                <p>Siparişler yükleniyor...</p>
+                            ) : orders.length > 0 ? (
                                 <div className={styles.orderList}>
-                                    {MOCK_ORDERS.map(order => (
+                                    {orders.map(order => (
                                         <div key={order.id} className={styles.orderCard}>
                                             <div className={styles.orderHeader}>
-                                                <span className={styles.orderId}>#{order.id}</span>
-                                                <span className={`${styles.status} ${styles[order.status.toLowerCase().replace(' ', '')]}`}>
+                                                <span className={styles.orderId}>#{order.id.slice(0, 8).toUpperCase()}</span>
+                                                <span className={`${styles.status} ${styles[order.status.toLowerCase().replace(/\s/g, '').replace(/ç/g, 'c').replace(/ı/g, 'i').replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ğ/g, 'g')] || styles.hazirlaniyor}`}>
                                                     {order.status}
                                                 </span>
                                             </div>
                                             <div className={styles.orderDetails}>
-                                                <span>{order.date}</span>
+                                                <span>{order.date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                                                 <span>{order.total.toLocaleString('tr-TR')} ₺</span>
                                             </div>
                                             {order.shippingCode && (

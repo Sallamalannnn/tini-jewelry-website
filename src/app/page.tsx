@@ -88,7 +88,7 @@ export default function Home() {
             marginBottom: 'var(--spacing-md)',
             fontFamily: 'var(--font-heading)',
             color: '#8B6508'
-          }}>Tını Dünyasına Katılın</h2>
+          }}>TINI Dünyasına Katılın</h2>
           <p style={{
             maxWidth: '600px',
             margin: '0 auto',

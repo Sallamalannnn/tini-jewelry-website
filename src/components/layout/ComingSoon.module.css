@@ -29,32 +29,33 @@
 }
 
 .logoWrapper {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
     animation: fadeInDown 1.2s ease-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
-.brandName {
-    font-size: 5rem;
-    font-weight: 200;
-    letter-spacing: 1.5rem;
-    margin: 0;
-    background: linear-gradient(to bottom, #d4af37 0%, #f1d592 50%, #b8860b 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-transform: uppercase;
-    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-
-.brandSubtitle {
+.mainLogo {
+    max-width: 100%;
+    height: auto;
     display: block;
-    font-size: 0.8rem;
-    letter-spacing: 0.5rem;
-    margin-top: 0.5rem;
-    color: #b8860b;
-    text-indent: 0.5rem;
-    opacity: 0.9;
-    font-weight: 400;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 20px rgba(184, 134, 11, 0.2));
+    animation: scaleIn 1.5s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .glassCard {

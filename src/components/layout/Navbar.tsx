@@ -11,11 +11,14 @@ import { useCart } from '@/context/CartContext';
 
 import { useAuth } from '@/context/AuthContext';
 
+import { SearchModal } from './SearchModal';
+
 export const Navbar = () => {
     const { user } = useAuth();
     const pathname = usePathname();
     const isTransparent = pathname === '/' || pathname?.startsWith('/product/');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { toggleCart, totalItems } = useCart();
 
     return (
@@ -42,7 +45,11 @@ export const Navbar = () => {
 
                     {/* Icons (Right) */}
                     <div className={styles.actions}>
-                        <button className={styles.actionBtn} aria-label="Ara">
+                        <button
+                            className={styles.actionBtn}
+                            aria-label="Ara"
+                            onClick={() => setIsSearchOpen(true)}
+                        >
                             <Search size={22} strokeWidth={1.5} />
                         </button>
                         <Link href={user ? "/account" : "/login"} className={styles.actionBtn} aria-label={user ? "Hesabım" : "Giriş Yap"}>
@@ -58,6 +65,11 @@ export const Navbar = () => {
                         </button>
                     </div>
                 </div>
+
+                <SearchModal
+                    isOpen={isSearchOpen}
+                    onClose={() => setIsSearchOpen(false)}
+                />
 
                 {/* Secondary Category Navigation (Row 2) */}
                 <nav className={styles.navCategories}>

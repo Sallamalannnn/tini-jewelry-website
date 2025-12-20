@@ -11,8 +11,14 @@ export default function ComingSoon() {
 
             <main className={styles.content}>
                 <div className={styles.logoWrapper}>
-                    <h1 className={styles.brandName}>TINI</h1>
-                    <span className={styles.brandSubtitle}>GİYİM VE AKSESUAR</span>
+                    <Image
+                        src="/assets/logos/tini-main-logo.png"
+                        alt="TINI GİYİM VE AKSESUAR"
+                        width={400}
+                        height={400}
+                        className={styles.mainLogo}
+                        priority
+                    />
                 </div>
 
                 <div className={styles.glassCard}>

@@ -8,7 +8,10 @@ export async function POST(req: Request) {
         const SHOPIER_API_KEY = process.env.SHOPIER_API_KEY;
 
         if (!SHOPIER_API_KEY) {
-            return NextResponse.json({ error: 'Shopier API key is missing' }, { status: 500 });
+            console.error('CRITICAL: SHOPIER_API_KEY is not defined in environment variables.');
+            return NextResponse.json({
+                error: 'Ödeme sistemi şu an yapılandırma aşamasında. Lütfen daha sonra tekrar deneyin veya mağaza sahibiyle iletişime geçin.'
+            }, { status: 500 });
         }
 
         // Shopier V2 API implementation

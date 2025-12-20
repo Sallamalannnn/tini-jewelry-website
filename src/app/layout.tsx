@@ -26,7 +26,7 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: 'Tını - Giyim & Aksesuar',
+  title: 'TINI GİYİM VE AKSESUAR',
   description: 'Zarif takı ve aksesuarlar için premium e-ticaret deneyimi.',
 };
 

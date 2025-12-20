@@ -68,7 +68,7 @@ export const CheckoutForm = () => {
         setLoading(true);
 
         try {
-            // If adding a new address during checkout, save it first
+            // If adding a new address and logged in, save it to profile
             if (user && isAddingNewAddress) {
                 await addAddress(formData);
             }
@@ -174,12 +174,12 @@ export const CheckoutForm = () => {
                                     <div className={styles.formContainer}>
                                         <div className={styles.row}>
                                             <div className={styles.field}>
-                                                <label className={styles.label}>Adres Başlığı (örn: Ev)</label>
-                                                <input required name="title" className={styles.input} value={formData.title} onChange={handleChange} />
+                                                <label className={styles.label}>E-posta</label>
+                                                <input required type="email" name="email" className={styles.input} value={formData.email} onChange={handleChange} placeholder="ornek@mail.com" />
                                             </div>
                                             <div className={styles.field}>
                                                 <label className={styles.label}>Telefon</label>
-                                                <input required type="tel" name="phone" className={styles.input} value={formData.phone} onChange={handleChange} />
+                                                <input required type="tel" name="phone" className={styles.input} value={formData.phone} onChange={handleChange} placeholder="05XX XXX XX XX" />
                                             </div>
                                         </div>
                                         <div className={styles.row}>
@@ -223,14 +223,14 @@ export const CheckoutForm = () => {
                     </div>
 
                     <div className={styles.infoBox}>
-                        <p>📢 Ödemenizi güvenli <strong>Shopier</strong> altyapısı ile tamamlayacaksınız.</p>
+                        <p>📢 Ödemenizi güvenli <strong>Shopier</strong> altyapısı ile tamamlayacaksınız. <strong>TINI GİYİM VE AKSESUAR</strong> güvencesiyle.</p>
                     </div>
 
                     <Button
                         type="submit"
                         size="lg"
                         className={styles.submitBtn}
-                        disabled={loading || !user || (!selectedAddressId && isAddingNewAddress && !formData.address)}
+                        disabled={loading || (!user && !formData.email) || (!selectedAddressId && !formData.address)}
                     >
                         {loading ? 'İşleniyor...' : `Ödemeyi Tamamla (${totalPrice.toLocaleString('tr-TR')} ₺)`}
                     </Button>

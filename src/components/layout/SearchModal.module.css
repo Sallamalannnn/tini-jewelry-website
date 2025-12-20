@@ -1,0 +1,133 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 5, 0.98);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.modal {
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem;
+    position: relative;
+    animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.closeBtn {
+    position: absolute;
+    top: -5rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.closeBtn:hover {
+    opacity: 1;
+}
+
+.content {
+    text-align: center;
+}
+
+.title {
+    font-family: var(--font-cinzel);
+    font-size: 2rem;
+    letter-spacing: 0.5rem;
+    color: var(--color-primary);
+    margin-bottom: 3rem;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid rgba(184, 134, 11, 0.3);
+    transition: border-color 0.3s;
+}
+
+.inputWrapper:focus-within {
+    border-color: var(--color-primary);
+}
+
+.input {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1rem 0;
+    font-size: 1.5rem;
+    color: #fff;
+    font-family: var(--font-inter);
+    outline: none;
+}
+
+.input::placeholder {
+    color: #444;
+}
+
+.searchBtn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    cursor: pointer;
+    padding: 0 1rem;
+}
+
+.suggestions {
+    margin-top: 3rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.tags span {
+    padding: 0.5rem 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tags span:hover {
+    background: var(--color-primary);
+    color: #000;
+    border-color: var(--color-primary);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

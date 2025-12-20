@@ -1,9 +1,18 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/ui/Logo';
 import { Instagram, Facebook, Twitter } from 'lucide-react'; // Assuming valid icons
 import styles from './Footer.module.css';
 
 export const Footer = () => {
+    const [year, setYear] = useState(new Date().getFullYear());
+
+    useEffect(() => {
+        setYear(new Date().getFullYear());
+    }, []);
+
     return (
         <footer className={styles.footer}>
             <div className={`container ${styles.grid}`}>
@@ -11,7 +20,7 @@ export const Footer = () => {
                 <div className={styles.col}>
                     <Logo className="mb-4" />
                     <p className={styles.description}>
-                        Doğanın ve zarafetin buluştuğu nokta. Tını, size özel tasarımlarla hayatınıza ışıltı katar.
+                        Doğanın ve zarafetin buluştuğu nokta. TINI GİYİM VE AKSESUAR, size özel tasarımlarla hayatınıza ışıltı katar.
                     </p>
                     <div className={styles.socials}>
                         <Link href="#" className={styles.socialLink}><Instagram size={20} /></Link>
@@ -50,7 +59,7 @@ export const Footer = () => {
             </div>
 
             <div className={`container ${styles.copyright}`}>
-                <p>&copy; {new Date().getFullYear()} Tını Giyim & Aksesuar. Tüm hakları saklıdır.</p>
+                <p>&copy; {year} TINI GİYİM VE AKSESUAR. Tüm hakları saklıdır.</p>
                 <Link href="/admin" className={styles.adminLink} style={{ marginLeft: '10px', fontSize: '12px', opacity: 0.5, color: 'inherit' }}>Yönetici</Link>
             </div>
         </footer>

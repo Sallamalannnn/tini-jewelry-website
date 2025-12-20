@@ -64,7 +64,7 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
 
     return (
         <div className={styles.overlay} onClick={onClose}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modal}>
                 <button className={styles.closeBtn} onClick={onClose}>
                     <X size={32} strokeWidth={1} />
                 </button>
@@ -81,7 +81,14 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                             onChange={(e) => setQuery(e.target.value)}
                             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking input
                         />
-                        <button type="button" className={styles.inputCloseBtn} onClick={onClose}>
+                        <button
+                            type="button"
+                            className={styles.inputCloseBtn}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setQuery('');
+                            }}
+                        >
                             <X size={24} />
                         </button>
                         <button type="submit" className={styles.searchBtn}>
@@ -121,10 +128,10 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                         <div className={styles.suggestions}>
                             <p>Popüler Aramalar:</p>
                             <div className={styles.tags}>
-                                <span onClick={() => setQuery('Küpe')}>Küpe</span>
-                                <span onClick={() => setQuery('Kolye')}>Kolye</span>
-                                <span onClick={() => setQuery('Yüzük')}>Yüzük</span>
-                                <span onClick={() => setQuery('Yeni')}>Yeni Koleksiyon</span>
+                                <span onClick={(e) => { e.stopPropagation(); setQuery('Küpe'); }}>Küpe</span>
+                                <span onClick={(e) => { e.stopPropagation(); setQuery('Kolye'); }}>Kolye</span>
+                                <span onClick={(e) => { e.stopPropagation(); setQuery('Yüzük'); }}>Yüzük</span>
+                                <span onClick={(e) => { e.stopPropagation(); setQuery('Yeni'); }}>Yeni Koleksiyon</span>
                             </div>
                         </div>
                     )}

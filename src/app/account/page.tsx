@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
-import { MapPin, CreditCard, Heart, ShoppingBag, Settings, LogOut, Package, Plus, RefreshCcw, X } from 'lucide-react';
+import { MapPin, CreditCard, Heart, ShoppingBag, Settings, LogOut, Package, Plus, RefreshCcw, X, Info } from 'lucide-react';
 
 // Mock Data
 const MOCK_ORDERS = [
@@ -52,6 +52,7 @@ export default function AccountPage() {
     // Return/Cancel Modal State
     const [showReturnModal, setShowReturnModal] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+    const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
 
     useEffect(() => {
         if (!loading && !user) {
@@ -395,44 +396,59 @@ export default function AccountPage() {
                             <h2 className={styles.sectionTitle} style={{ marginBottom: '1.5rem', borderBottom: '1px solid #eee', paddingBottom: '1rem' }}>
                                 İade / İptal Talebi
                             </h2>
-                            <p style={{ marginBottom: '1rem', color: '#666' }}>
-                                <span style={{ fontWeight: '600', color: '#000' }}>#{selectedOrderId}</span> numaralı siparişiniz için talebinizi oluşturun.
+                            <p style={{ marginBottom: '1rem', color: '#666', fontSize: '0.95rem', lineHeight: '1.5' }}>
+                                <span style={{ fontWeight: '600', color: '#000' }}>#{selectedOrderId}</span> numaralı siparişiniz için iade/iptal süreci <strong>Shopier</strong> güvencesiyle yürütülmektedir.
+                                <br /><br />
+                                Talebiniz incelendikten sonra, kayıtlı e-posta adresinize ve telefonunuza <strong>Shopier İade Kargo Kodu</strong> iletilecektir.
                             </p>
+
+                            <div style={{ backgroundColor: '#f0f7ff', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid #cce3ff', display: 'flex', gap: '10px', alignItems: 'start' }}>
+                                <Info size={20} color="#0066cc" style={{ marginTop: '2px', flexShrink: 0 }} />
+                                <p style={{ fontSize: '0.85rem', color: '#004c99', margin: 0 }}>
+                                    Shopier anlaşmalı kargo kodu ile ürününüzü <strong>ücretsiz</strong> olarak geri gönderebilirsiniz. Kodunuz onay sonrası size iletilecektir.
+                                </p>
+                            </div>
 
                             <form onSubmit={(e) => {
                                 e.preventDefault();
-                                alert(`Talebiniz alınmıştır. Sipariş No: ${selectedOrderId}. En kısa sürede iletişime geçilecektir.`);
-                                setShowReturnModal(false);
+                                setIsSubmittingReturn(true);
+
+                                // Simulate API call
+                                setTimeout(() => {
+                                    setIsSubmittingReturn(false);
+                                    alert(`Talebiniz alınmıştır! Shopier iade kodunuz en kısa sürede SMS ve E-posta ile gönderilecektir.`);
+                                    setShowReturnModal(false);
+                                }, 1500);
                             }}>
                                 <div className={styles.field} style={{ marginBottom: '1rem' }}>
-                                    <label>Talep Nedeni</label>
+                                    <label>İade Nedeni</label>
                                     <select className={styles.select} required defaultValue="">
                                         <option value="" disabled>Seçiniz</option>
-                                        <option value="vazgectim">Vazgeçtim / İptal Etmek İstiyorum</option>
-                                        <option value="beden">Beden / Ölçü Uymadı</option>
-                                        <option value="kusurlu">Kusurlu / Hasarlı Ürün</option>
-                                        <option value="yanlis">Yanlış Ürün Gönderimi</option>
-                                        <option value="diger">Diğer</option>
+                                        <option value="vazgectim">Vazgeçtim</option>
+                                        <option value="beden">Beden Uymadı</option>
+                                        <option value="kusurlu">Ürün Kusurlu/Hasarlı</option>
+                                        <option value="yanlis">Yanlış Ürün Geldi</option>
                                     </select>
                                 </div>
 
                                 <div className={styles.field} style={{ marginBottom: '1rem' }}>
-                                    <label>Açıklama (Opsiyonel)</label>
+                                    <label>Ek Açıklama (Opsiyonel)</label>
                                     <textarea
                                         className={styles.textarea}
-                                        placeholder="Lütfen detaylı bilgi veriniz..."
+                                        placeholder="Ürün durumu hakkında bilgi verebilirsiniz..."
                                     ></textarea>
                                 </div>
 
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                                    <Button type="button" variant="outline" onClick={() => setShowReturnModal(false)}>Vazgeç</Button>
-                                    <Button type="submit">Talep Oluştur</Button>
+                                    <Button type="button" variant="outline" onClick={() => setShowReturnModal(false)} disabled={isSubmittingReturn}>Vazgeç</Button>
+                                    <Button type="submit" disabled={isSubmittingReturn}>
+                                        {isSubmittingReturn ? 'İletiliyor...' : 'Talebi Gönder'}
+                                    </Button>
                                 </div>
                             </form>
                         </div>
                     </div>
-                )
-            }
+                )}
         </div >
     );
 }

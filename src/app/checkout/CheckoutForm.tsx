@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
 
 export const CheckoutForm = () => {
     const { items, totalPrice } = useCart();
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
@@ -17,6 +19,19 @@ export const CheckoutForm = () => {
         city: '',
         zip: ''
     });
+
+    useEffect(() => {
+        if (user) {
+            // Split display name if available, otherwise just use as firstName
+            const names = user.displayName?.split(' ') || ['', ''];
+            setFormData(prev => ({
+                ...prev,
+                firstName: names[0] || '',
+                lastName: names.slice(1).join(' ') || '',
+                email: user.email || ''
+            }));
+        }
+    }, [user]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

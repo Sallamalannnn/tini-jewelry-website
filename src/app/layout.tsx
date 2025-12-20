@@ -31,25 +31,32 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from '@/context/AuthContext';
+import ComingSoon from '@/components/layout/ComingSoon';
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isMaintenanceMode = process.env.NODE_ENV === 'production';
+
   return (
     <html lang="tr">
       <body className={clsx(inter.className, playfair.variable, cinzel.variable)}>
-        <AuthProvider>
-          <CartProvider>
-            <Navbar />
-            <CartDrawer />
-            <main style={{ minHeight: '80vh' }}>
-              {children}
-            </main>
-            <Footer />
-          </CartProvider>
-        </AuthProvider>
+        {isMaintenanceMode ? (
+          <ComingSoon />
+        ) : (
+          <AuthProvider>
+            <CartProvider>
+              <Navbar />
+              <CartDrawer />
+              <main style={{ minHeight: '80vh' }}>
+                {children}
+              </main>
+              <Footer />
+            </CartProvider>
+          </AuthProvider>
+        )}
       </body>
     </html>
   );

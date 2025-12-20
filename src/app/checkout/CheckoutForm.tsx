@@ -8,9 +8,12 @@ import styles from './page.module.css';
 
 export const CheckoutForm = () => {
     const { items, totalPrice } = useCart();
-    const { user } = useAuth();
+    const { user, userData, loading: authLoading, userDataLoading, addAddress } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+    const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
     const [formData, setFormData] = useState({
+        title: 'Yeni Adres',
         firstName: '',
         lastName: '',
         email: '',
@@ -20,16 +23,39 @@ export const CheckoutForm = () => {
         zip: ''
     });
 
+    // Auto-select first address if available
     useEffect(() => {
-        if (user) {
-            // Split display name if available, otherwise just use as firstName
-            const names = user.displayName?.split(' ') || ['', ''];
-            setFormData(prev => ({
-                ...prev,
-                firstName: names[0] || '',
-                lastName: names.slice(1).join(' ') || '',
-                email: user.email || ''
-            }));
+        if (!userDataLoading && user) {
+            const hasAddresses = userData?.addresses?.length > 0;
+
+            if (hasAddresses) {
+                if (!selectedAddressId && !isAddingNewAddress) {
+                    setSelectedAddressId(userData.addresses[0].id);
+                    setIsAddingNewAddress(false);
+                }
+            } else {
+                setIsAddingNewAddress(true);
+            }
+        }
+    }, [userData, userDataLoading, user]);
+
+    // Sync formData with selected address
+    useEffect(() => {
+        if (selectedAddressId && userData?.addresses) {
+            const selected = userData.addresses.find((a: any) => a.id === selectedAddressId);
+            if (selected) {
+                setFormData({
+                    ...selected,
+                    email: user?.email || ''
+                });
+            }
+        }
+    }, [selectedAddressId, userData, user]);
+
+    // Simplified useEffect for initial data
+    useEffect(() => {
+        if (user && !formData.email) {
+            setFormData(prev => ({ ...prev, email: user.email || '' }));
         }
     }, [user]);
 
@@ -42,6 +68,11 @@ export const CheckoutForm = () => {
         setLoading(true);
 
         try {
+            // If adding a new address during checkout, save it first
+            if (user && isAddingNewAddress) {
+                await addAddress(formData);
+            }
+
             const response = await fetch('/api/checkout/shopier', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -79,6 +110,14 @@ export const CheckoutForm = () => {
         );
     }
 
+    if (authLoading || (user && userDataLoading)) {
+        return (
+            <div className={styles.section} style={{ textAlign: 'center', padding: '4rem' }}>
+                <p>Bilgileriniz yükleniyor...</p>
+            </div>
+        );
+    }
+
     return (
         <div className={styles.grid}>
             {/* Form Section */}
@@ -87,101 +126,112 @@ export const CheckoutForm = () => {
                     <div className={styles.section}>
                         <h2 className={styles.sectionTitle}>Teslimat Bilgileri</h2>
 
-                        <div className={styles.row}>
-                            <div className={styles.field}>
-                                <label className={styles.label}>E-posta</label>
-                                <input
-                                    required
-                                    type="email"
-                                    name="email"
-                                    className={styles.input}
-                                    placeholder="ornek@mail.com"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                />
+                        {!user ? (
+                            <div style={{ textAlign: 'center', padding: '2rem' }}>
+                                <p style={{ marginBottom: '1.5rem', color: '#888' }}>
+                                    Ödemeye devam etmek için lütfen giriş yapın veya kayıt olun.
+                                </p>
+                                <Button onClick={() => window.location.href = '/login'} style={{ width: '100%' }}>
+                                    Giriş Yap / Kayıt Ol
+                                </Button>
                             </div>
-                            <div className={styles.field}>
-                                <label className={styles.label}>Telefon</label>
-                                <input
-                                    required
-                                    type="tel"
-                                    name="phone"
-                                    className={styles.input}
-                                    placeholder="05XX XXX XX XX"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
-
-                        <div className={styles.row}>
-                            <div className={styles.field}>
-                                <label className={styles.label}>Ad</label>
-                                <input
-                                    required
-                                    name="firstName"
-                                    className={styles.input}
-                                    placeholder="Adınız"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label}>Soyad</label>
-                                <input
-                                    required
-                                    name="lastName"
-                                    className={styles.input}
-                                    placeholder="Soyadınız"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
-
-                        <div className={styles.field}>
-                            <label className={styles.label}>Adres</label>
-                            <input
-                                required
-                                name="address"
-                                className={styles.input}
-                                placeholder="Sokak, Mahalle, No"
-                                value={formData.address}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className={styles.row}>
-                            <div className={styles.field}>
-                                <label className={styles.label}>Şehir</label>
-                                <input
-                                    required
-                                    name="city"
-                                    className={styles.input}
-                                    placeholder="İstanbul"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label}>Posta Kodu</label>
-                                <input
-                                    required
-                                    name="zip"
-                                    className={styles.input}
-                                    placeholder="34000"
-                                    value={formData.zip}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        ) : (
+                            <>
+                                {userData?.addresses?.length > 0 && !isAddingNewAddress ? (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        <div className={styles.addressGrid}>
+                                            {userData.addresses.map((addr: any) => (
+                                                <div
+                                                    key={addr.id}
+                                                    className={`${styles.addressCard} ${selectedAddressId === addr.id ? styles.selected : ''}`}
+                                                    onClick={() => setSelectedAddressId(addr.id)}
+                                                >
+                                                    <div className={styles.addressCardHeader}>
+                                                        <strong>{addr.title}</strong>
+                                                        {selectedAddressId === addr.id && <span className={styles.checkIcon}>✓</span>}
+                                                    </div>
+                                                    <p>{addr.firstName} {addr.lastName}</p>
+                                                    <p>{addr.address}</p>
+                                                    <p>{addr.zip} {addr.city}</p>
+                                                    <p>{addr.phone}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <Button
+                                            variant="outline"
+                                            type="button"
+                                            onClick={() => {
+                                                setIsAddingNewAddress(true);
+                                                setSelectedAddressId(null);
+                                                setFormData({ ...formData, title: 'Yeni Adres', firstName: '', lastName: '', phone: '', address: '', city: '', zip: '' });
+                                            }}
+                                            style={{ marginTop: '0.5rem' }}
+                                        >
+                                            + Yeni Adres Ekle
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className={styles.formContainer}>
+                                        <div className={styles.row}>
+                                            <div className={styles.field}>
+                                                <label className={styles.label}>Adres Başlığı (örn: Ev)</label>
+                                                <input required name="title" className={styles.input} value={formData.title} onChange={handleChange} />
+                                            </div>
+                                            <div className={styles.field}>
+                                                <label className={styles.label}>Telefon</label>
+                                                <input required type="tel" name="phone" className={styles.input} value={formData.phone} onChange={handleChange} />
+                                            </div>
+                                        </div>
+                                        <div className={styles.row}>
+                                            <div className={styles.field}>
+                                                <label className={styles.label}>Ad</label>
+                                                <input required name="firstName" className={styles.input} value={formData.firstName} onChange={handleChange} />
+                                            </div>
+                                            <div className={styles.field}>
+                                                <label className={styles.label}>Soyad</label>
+                                                <input required name="lastName" className={styles.input} value={formData.lastName} onChange={handleChange} />
+                                            </div>
+                                        </div>
+                                        <div className={styles.field}>
+                                            <label className={styles.label}>Adres</label>
+                                            <input required name="address" className={styles.input} value={formData.address} onChange={handleChange} />
+                                        </div>
+                                        <div className={styles.row}>
+                                            <div className={styles.field}>
+                                                <label className={styles.label}>Şehir</label>
+                                                <input required name="city" className={styles.input} value={formData.city} onChange={handleChange} />
+                                            </div>
+                                            <div className={styles.field}>
+                                                <label className={styles.label}>Posta Kodu</label>
+                                                <input required name="zip" className={styles.input} value={formData.zip} onChange={handleChange} />
+                                            </div>
+                                        </div>
+                                        {userData?.addresses?.length > 0 && (
+                                            <Button
+                                                variant="outline"
+                                                type="button"
+                                                onClick={() => setIsAddingNewAddress(false)}
+                                                style={{ marginTop: '1rem', width: '100%' }}
+                                            >
+                                                Vazgeç ve Kayıtlı Adres Seç
+                                            </Button>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
 
                     <div className={styles.infoBox}>
                         <p>📢 Ödemenizi güvenli <strong>Shopier</strong> altyapısı ile tamamlayacaksınız.</p>
                     </div>
 
-                    <Button type="submit" size="lg" className={styles.submitBtn} disabled={loading}>
+                    <Button
+                        type="submit"
+                        size="lg"
+                        className={styles.submitBtn}
+                        disabled={loading || !user || (!selectedAddressId && isAddingNewAddress && !formData.address)}
+                    >
                         {loading ? 'İşleniyor...' : `Ödemeyi Tamamla (${totalPrice.toLocaleString('tr-TR')} ₺)`}
                     </Button>
                 </form>

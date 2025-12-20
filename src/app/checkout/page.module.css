@@ -101,6 +101,86 @@
     margin-top: var(--spacing-lg);
 }
 
+.addressSummary {
+    padding: 1.5rem;
+    background: rgba(212, 175, 55, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    border-radius: 12px;
+    color: var(--color-text-main);
+    line-height: 1.6;
+}
+
+.addressSummary p {
+    margin: 0;
+}
+
+.infoBox {
+    padding: 1rem;
+    background: #050505;
+    border: 1px solid #333;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.infoBox strong {
+    color: #fff;
+}
+
+.addressGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.addressCard {
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.addressCard:hover {
+    border-color: var(--color-primary);
+    background: rgba(184, 134, 11, 0.05);
+}
+
+.addressCard.selected {
+    border-color: var(--color-primary);
+    background: rgba(184, 134, 11, 0.08);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.addressCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.addressCard p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.checkIcon {
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 @media (min-width: 768px) {
     .grid {
         grid-template-columns: 1.5fr 1fr;

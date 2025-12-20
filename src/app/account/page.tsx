@@ -32,9 +32,22 @@ import { useRouter } from 'next/navigation';
 type TabType = 'orders' | 'addresses' | 'payments' | 'wishlist' | 'profile';
 
 export default function AccountPage() {
-    const { user, logout, loading } = useAuth();
+    const { user, userData, logout, loading, addAddress, updateAddress, deleteAddress } = useAuth();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<TabType>('orders');
+
+    // Address management state
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
+    const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+    const [addressForm, setAddressForm] = useState({
+        title: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        address: '',
+        city: '',
+        zip: ''
+    });
 
     useEffect(() => {
         if (!loading && !user) {
@@ -49,6 +62,38 @@ export default function AccountPage() {
     const handleLogout = async () => {
         await logout();
         router.push('/');
+    };
+
+    const handleSaveAddress = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (editingAddressId) {
+                await updateAddress(editingAddressId, addressForm);
+            } else {
+                await addAddress(addressForm);
+            }
+            setIsAddingAddress(false);
+            setEditingAddressId(null);
+            setAddressForm({ title: '', firstName: '', lastName: '', phone: '', address: '', city: '', zip: '' });
+        } catch (error) {
+            alert('Adres kaydedilirken bir hata oluştu.');
+        }
+    };
+
+    const handleEditAddress = (addr: any) => {
+        setAddressForm(addr);
+        setEditingAddressId(addr.id);
+        setIsAddingAddress(true);
+    };
+
+    const handleDeleteAddress = async (id: string) => {
+        if (window.confirm('Bu adresi silmek istediğinize emin misiniz?')) {
+            try {
+                await deleteAddress(id);
+            } catch (error) {
+                alert('Adres silinirken bir hata oluştu.');
+            }
+        }
     };
 
     const navItems = [
@@ -124,25 +169,130 @@ export default function AccountPage() {
                         <div className={styles.section}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-lg)' }}>
                                 <h2 className={styles.sectionTitle} style={{ marginBottom: 0 }}>Adres Bilgilerim</h2>
-                                <Button variant="outline" size="sm">
-                                    <Plus size={16} style={{ marginRight: '8px' }} /> Yeni Adres Ekle
-                                </Button>
+                                {!isAddingAddress && (
+                                    <Button variant="outline" size="sm" onClick={() => setIsAddingAddress(true)}>
+                                        <Plus size={16} style={{ marginRight: '8px' }} /> Yeni Adres Ekle
+                                    </Button>
+                                )}
                             </div>
-                            <div className={styles.grid}>
-                                {MOCK_ADDRESSES.map(addr => (
-                                    <div key={addr.id} className={styles.cardItem}>
-                                        <div className={styles.cardHeader}>
-                                            <span className={styles.cardTitle}><MapPin size={16} /> {addr.title}</span>
+
+                            {isAddingAddress ? (
+                                <form onSubmit={handleSaveAddress} className={styles.profileForm} style={{ maxWidth: '100%' }}>
+                                    <div className={styles.row}>
+                                        <div className={styles.field}>
+                                            <label>Adres Başlığı (örn: Evim)</label>
+                                            <input
+                                                required
+                                                type="text"
+                                                value={addressForm.title}
+                                                onChange={(e) => setAddressForm({ ...addressForm, title: e.target.value })}
+                                                className={styles.input}
+                                            />
                                         </div>
-                                        <p className={styles.cardContent}>{addr.address}</p>
-                                        <p className={styles.cardContent}><strong>Tel:</strong> {addr.phone}</p>
-                                        <div className={styles.cardActions}>
-                                            <button className={styles.actionLink}>Düzenle</button>
-                                            <button className={`${styles.actionLink} ${styles.delete}`}>Sil</button>
+                                        <div className={styles.field}>
+                                            <label>Telefon</label>
+                                            <input
+                                                required
+                                                type="tel"
+                                                value={addressForm.phone}
+                                                onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
+                                                className={styles.input}
+                                            />
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                    <div className={styles.row}>
+                                        <div className={styles.field}>
+                                            <label>Ad</label>
+                                            <input
+                                                required
+                                                type="text"
+                                                value={addressForm.firstName}
+                                                onChange={(e) => setAddressForm({ ...addressForm, firstName: e.target.value })}
+                                                className={styles.input}
+                                            />
+                                        </div>
+                                        <div className={styles.field}>
+                                            <label>Soyad</label>
+                                            <input
+                                                required
+                                                type="text"
+                                                value={addressForm.lastName}
+                                                onChange={(e) => setAddressForm({ ...addressForm, lastName: e.target.value })}
+                                                className={styles.input}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className={styles.field}>
+                                        <label>Adres</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            value={addressForm.address}
+                                            onChange={(e) => setAddressForm({ ...addressForm, address: e.target.value })}
+                                            className={styles.input}
+                                        />
+                                    </div>
+                                    <div className={styles.row}>
+                                        <div className={styles.field}>
+                                            <label>Şehir</label>
+                                            <input
+                                                required
+                                                type="text"
+                                                value={addressForm.city}
+                                                onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                                                className={styles.input}
+                                            />
+                                        </div>
+                                        <div className={styles.field}>
+                                            <label>Posta Kodu</label>
+                                            <input
+                                                required
+                                                type="text"
+                                                value={addressForm.zip}
+                                                onChange={(e) => setAddressForm({ ...addressForm, zip: e.target.value })}
+                                                className={styles.input}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                        <Button type="submit">{editingAddressId ? 'Güncelle' : 'Kaydet'}</Button>
+                                        <Button type="button" variant="outline" onClick={() => {
+                                            setIsAddingAddress(false);
+                                            setEditingAddressId(null);
+                                            setAddressForm({ title: '', firstName: '', lastName: '', phone: '', address: '', city: '', zip: '' });
+                                        }}>Vazgeç</Button>
+                                    </div>
+                                </form>
+                            ) : (
+                                <div className={styles.grid}>
+                                    {userData?.addresses?.length > 0 ? (
+                                        userData.addresses.map((addr: any) => (
+                                            <div key={addr.id} className={styles.cardItem}>
+                                                <div className={styles.cardHeader}>
+                                                    <span className={styles.cardTitle}><MapPin size={16} /> {addr.title}</span>
+                                                </div>
+                                                <p className={styles.cardContent}><strong>{addr.firstName} {addr.lastName}</strong></p>
+                                                <p className={styles.cardContent}>{addr.address}</p>
+                                                <p className={styles.cardContent}>
+                                                    {addr.zip} {addr.city}
+                                                </p>
+                                                <p className={styles.cardContent}><strong>Tel:</strong> {addr.phone}</p>
+                                                <div className={styles.cardActions}>
+                                                    <button className={styles.actionLink} onClick={() => handleEditAddress(addr)}>Düzenle</button>
+                                                    <button
+                                                        className={`${styles.actionLink} ${styles.delete}`}
+                                                        onClick={() => handleDeleteAddress(addr.id)}
+                                                    >Sil</button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: '#888' }}>
+                                            Henüz kayıtlı bir adresiniz bulunmuyor.
+                                        </p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
 

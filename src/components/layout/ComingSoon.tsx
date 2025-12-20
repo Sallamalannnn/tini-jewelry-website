@@ -11,15 +11,15 @@ export default function ComingSoon() {
 
             <main className={styles.content}>
                 <div className={styles.logoWrapper}>
-                    <h1 className={styles.brandName}>TİNİ</h1>
-                    <span className={styles.brandSubtitle}>JEWELRY</span>
+                    <h1 className={styles.brandName}>TINI</h1>
+                    <span className={styles.brandSubtitle}>GİYİM VE AKSESUAR</span>
                 </div>
 
                 <div className={styles.glassCard}>
                     <h2 className={styles.title}>Parıltıya Hazır Olun</h2>
                     <p className={styles.description}>
                         Sizler için en nadide parçaları hazırlıyoruz.
-                        Tini Jewelry çok yakında yeni koleksiyonuyla yayında olacak.
+                        TINI GİYİM VE AKSESUAR çok yakında yeni koleksiyonuyla yayında olacak.
                     </p>
 
                     <div className={styles.statusBadge}>
@@ -29,7 +29,7 @@ export default function ComingSoon() {
                 </div>
 
                 <footer className={styles.footer}>
-                    <p>&copy; 2024 Tini Jewelry. Tüm Hakları Saklıdır.</p>
+                    <p>&copy; 2024 TINI GİYİM VE AKSESUAR. Tüm Hakları Saklıdır.</p>
                 </footer>
             </main>
         </div>

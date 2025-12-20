@@ -38,19 +38,23 @@
     font-weight: 200;
     letter-spacing: 1.5rem;
     margin: 0;
-    background: linear-gradient(to bottom, #fff 0%, #a5a5a5 100%);
+    background: linear-gradient(to bottom, #d4af37 0%, #f1d592 50%, #b8860b 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     text-transform: uppercase;
+    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .brandSubtitle {
     display: block;
-    font-size: 0.9rem;
-    letter-spacing: 0.8rem;
-    margin-top: -0.5rem;
-    color: #888;
-    text-indent: 0.8rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.5rem;
+    margin-top: 0.5rem;
+    color: #b8860b;
+    text-indent: 0.5rem;
+    opacity: 0.9;
+    font-weight: 400;
 }
 
 .glassCard {

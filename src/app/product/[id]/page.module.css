@@ -34,7 +34,7 @@
 }
 
 .page {
-    padding-top: calc(5rem + var(--spacing-2xl));
+    padding-top: calc(10rem + var(--spacing-2xl));
     padding-bottom: 0;
 }
 
@@ -116,7 +116,7 @@
 
 .title {
     font-family: var(--font-playfair);
-    font-size: 3.5rem;
+    font-size: 1.2rem;
     margin-bottom: var(--spacing-sm);
     color: #111;
     letter-spacing: -0.02em;
@@ -125,43 +125,41 @@
     font-weight: 600;
 }
 
-.price {
-    font-family: var(--font-inter);
-    font-size: 2.25rem;
-    font-weight: 500;
-    color: #000;
-    margin-bottom: var(--spacing-lg);
-}
-
-.divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
-    margin: var(--spacing-lg) 0;
-}
-
-[data-color="sarı"] .divider,
-[data-color="karışık"] .divider {
-    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
-}
-
-[data-color="beyaz"] .divider {
-    background: linear-gradient(90deg, transparent, rgba(160, 160, 160, 0.4), transparent);
-}
-
-[data-color="pembe"] .divider {
-    background: linear-gradient(90deg, transparent, rgba(224, 191, 184, 0.4), transparent);
-}
-
-[data-color="siyah"] .divider {
-    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.4), transparent);
+.descriptionWrapper {
+    cursor: pointer;
+    margin-bottom: var(--spacing-xl);
+    user-select: none;
 }
 
 .description {
     color: #333;
     font-size: 1.1rem;
     line-height: 1.8;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: 0.5rem;
     font-weight: 400;
+    transition: all 0.3s ease;
+}
+
+.description.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    opacity: 0.8;
+}
+
+.expandHint {
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.8;
+}
+
+.rotate180 {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
 }
 
 .actions {
@@ -669,4 +667,87 @@
     color: #fff !important;
     border: none;
     box-shadow: 0 4px 15px rgba(136, 8, 8, 0.3);
+}
+
+/* Accordion Styles */
+.accordion {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: var(--spacing-xl);
+}
+
+.accordionItem {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.accordionHeader {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.accordionHeader:hover {
+    color: #000;
+}
+
+.accordionTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: var(--font-inter);
+}
+
+.accordionContent {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+}
+
+.accordionContent.show {
+    max-height: 500px;
+    /* Arbitrary large height */
+    opacity: 1;
+}
+
+.accordionInner {
+    padding-bottom: 1.5rem;
+    padding-left: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+.accordionInner p {
+    margin: 0;
+}
+
+/* Dynamic Color Overrides for Accordion */
+.page[data-color="sarı"] .accordionHeader:hover,
+.page[data-color="karışık"] .accordionHeader:hover {
+    color: #b8860b;
+}
+
+.page[data-color="beyaz"] .accordionHeader:hover {
+    color: #757575;
+}
+
+.page[data-color="pembe"] .accordionHeader:hover {
+    color: #b76e79;
+}
+
+.page[data-color="siyah"] .accordionHeader:hover {
+    color: #000;
+}
+
+.page[data-color="kırmızı"] .accordionHeader:hover {
+    color: #880808;
 }

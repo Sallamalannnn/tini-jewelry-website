@@ -206,6 +206,43 @@ const SEARCH_SYNONYMS: Record<string, string[]> = {
     'dogal': ['naturel', 'gercek']
 };
 
+// Levenshtein Distance for fuzzy matching
+const levenshteinDistance = (a: string, b: string): number => {
+    if (a.length === 0) return b.length;
+    if (b.length === 0) return a.length;
+
+    const matrix = [];
+
+    // increment along the first column of each row
+    for (let i = 0; i <= b.length; i++) {
+        matrix[i] = [i];
+    }
+
+    // increment each column in the first row
+    for (let j = 0; j <= a.length; j++) {
+        matrix[0][j] = j;
+    }
+
+    // Fill in the rest of the matrix
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1, // substitution
+                    Math.min(
+                        matrix[i][j - 1] + 1, // insertion
+                        matrix[i - 1][j] + 1 // deletion
+                    )
+                );
+            }
+        }
+    }
+
+    return matrix[b.length][a.length];
+};
+
 // Search products by name, category, or description with fuzzy scoring and synonym expansion
 export const searchProducts = async (query: string): Promise<Product[]> => {
     if (!query || query.trim().length < 2) return [];
@@ -229,25 +266,42 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
         const pCategory = normalizeForSearch(product.category || '');
         const pColor = normalizeForSearch(product.color || '');
         const pMaterial = normalizeForSearch(product.material || '');
+        const allProductText = `${pName} ${pCategory} ${pColor} ${pMaterial}`.trim();
+        const productTokens = allProductText.split(/\s+/);
 
         // Check for exact phrase match (highest bonus)
         if (pName.includes(normalizedQuery)) score += 20;
         if (pCategory.includes(normalizedQuery)) score += 15;
 
-        // Check each expanded token
-        searchTokens.forEach(token => {
-            let tokenScore = 0;
-            if (pName.includes(token)) tokenScore += 5;
-            if (pCategory.includes(token)) tokenScore += 4;
-            if (pColor.includes(token)) tokenScore += 3;
-            if (pMaterial.includes(token)) tokenScore += 3;
+        // Check each search token against product tokens
+        searchTokens.forEach(searchToken => {
+            let bestTokenScore = 0;
 
-            // Reduce score slightly if it matched via a synonym (original tokens present in query)
-            if (!initialTokens.includes(token)) {
-                tokenScore = Math.ceil(tokenScore * 0.7); // 70% weight for synonyms
+            productTokens.forEach(prodToken => {
+                // Exact match
+                if (prodToken.includes(searchToken)) {
+                    bestTokenScore = Math.max(bestTokenScore, 5);
+                }
+                // Fuzzy match for longer words
+                else if (searchToken.length > 3 && prodToken.length > 3) {
+                    const distance = levenshteinDistance(searchToken, prodToken);
+                    // Allow 1 edit for 4-5 letter words, 2 edits for longer
+                    const maxDistance = searchToken.length > 5 ? 2 : 1;
+
+                    if (distance <= maxDistance) {
+                        bestTokenScore = Math.max(bestTokenScore, 3);
+                    }
+                }
+            });
+
+            // If matched (exact or fuzzy)
+            if (bestTokenScore > 0) {
+                // Reduce score slightly if it matched via a synonym (original tokens present in query)
+                if (!initialTokens.includes(searchToken)) {
+                    bestTokenScore = Math.ceil(bestTokenScore * 0.7);
+                }
+                score += bestTokenScore;
             }
-
-            score += tokenScore;
         });
 
         return { product, score };

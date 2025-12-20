@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import styles from './page.module.css';
-import { MapPin, CreditCard, Heart, ShoppingBag, Settings, LogOut, Package, Plus } from 'lucide-react';
+import { MapPin, CreditCard, Heart, ShoppingBag, Settings, LogOut, Package, Plus, RefreshCcw, X } from 'lucide-react';
 
 // Mock Data
 const MOCK_ORDERS = [
@@ -48,6 +48,10 @@ export default function AccountPage() {
         city: '',
         zip: ''
     });
+
+    // Return/Cancel Modal State
+    const [showReturnModal, setShowReturnModal] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
     useEffect(() => {
         if (!loading && !user) {
@@ -154,7 +158,20 @@ export default function AccountPage() {
                                                 <span>{order.date}</span>
                                                 <span>{order.total.toLocaleString('tr-TR')} ₺</span>
                                             </div>
-                                            <Button variant="outline" size="sm">Detaylar</Button>
+                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setSelectedOrderId(order.id);
+                                                        setShowReturnModal(true);
+                                                    }}
+                                                >
+                                                    <RefreshCcw size={14} style={{ marginRight: '6px' }} />
+                                                    İade/İptal
+                                                </Button>
+                                                <Button variant="outline" size="sm">Detaylar</Button>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -366,6 +383,56 @@ export default function AccountPage() {
                     )}
                 </main>
             </div>
-        </div>
+
+            {/* Return/Cancel Modal */}
+            {
+                showReturnModal && (
+                    <div className={styles.modalOverlay} onClick={() => setShowReturnModal(false)}>
+                        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                            <button className={styles.closeModalBtn} onClick={() => setShowReturnModal(false)}>
+                                <X size={20} />
+                            </button>
+                            <h2 className={styles.sectionTitle} style={{ marginBottom: '1.5rem', borderBottom: '1px solid #eee', paddingBottom: '1rem' }}>
+                                İade / İptal Talebi
+                            </h2>
+                            <p style={{ marginBottom: '1rem', color: '#666' }}>
+                                <span style={{ fontWeight: '600', color: '#000' }}>#{selectedOrderId}</span> numaralı siparişiniz için talebinizi oluşturun.
+                            </p>
+
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                alert(`Talebiniz alınmıştır. Sipariş No: ${selectedOrderId}. En kısa sürede iletişime geçilecektir.`);
+                                setShowReturnModal(false);
+                            }}>
+                                <div className={styles.field} style={{ marginBottom: '1rem' }}>
+                                    <label>Talep Nedeni</label>
+                                    <select className={styles.select} required defaultValue="">
+                                        <option value="" disabled>Seçiniz</option>
+                                        <option value="vazgectim">Vazgeçtim / İptal Etmek İstiyorum</option>
+                                        <option value="beden">Beden / Ölçü Uymadı</option>
+                                        <option value="kusurlu">Kusurlu / Hasarlı Ürün</option>
+                                        <option value="yanlis">Yanlış Ürün Gönderimi</option>
+                                        <option value="diger">Diğer</option>
+                                    </select>
+                                </div>
+
+                                <div className={styles.field} style={{ marginBottom: '1rem' }}>
+                                    <label>Açıklama (Opsiyonel)</label>
+                                    <textarea
+                                        className={styles.textarea}
+                                        placeholder="Lütfen detaylı bilgi veriniz..."
+                                    ></textarea>
+                                </div>
+
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                                    <Button type="button" variant="outline" onClick={() => setShowReturnModal(false)}>Vazgeç</Button>
+                                    <Button type="submit">Talep Oluştur</Button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 }

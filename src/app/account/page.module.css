@@ -315,3 +315,67 @@
     background-color: #f5f5f5;
     color: #999;
 }
+
+.row {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.closeModalBtn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    padding: 0.5rem;
+}
+
+.closeModalBtn:hover {
+    color: #000;
+    background-color: #f5f5f5;
+    border-radius: 50%;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    resize: vertical;
+}
+
+.select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: #fff;
+    font-family: var(--font-body);
+}
+
+```

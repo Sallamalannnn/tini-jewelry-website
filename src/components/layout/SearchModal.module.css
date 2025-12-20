@@ -5,7 +5,7 @@
     /* Ensure click capture */
     backdrop-filter: blur(10px);
     z-index: 2147483647;
-    pointer-events: auto;
+    pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,6 +17,7 @@
     max-width: 700px;
     padding: 3rem;
     position: relative;
+    pointer-events: auto;
     animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Glassmorphism Card Style */

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Search as SearchIcon, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -16,14 +16,26 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Product[]>([]);
     const [isSearching, setIsSearching] = useState(false);
+    const modalRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
     useEffect(() => {
-        if (!isOpen) {
-            setQuery('');
-            setResults([]);
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
         }
 
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen, onClose]);
+
+    useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
         };
@@ -60,11 +72,9 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
         }
     };
 
-    if (!isOpen) return null;
-
     return (
-        <div className={styles.overlay} onClick={onClose}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.overlay} style={{ display: isOpen ? 'flex' : 'none' }}>
+            <div className={styles.modal} ref={modalRef} onClick={(e) => e.stopPropagation()}>
                 <button className={styles.closeBtn} onClick={onClose}>
                     <X size={32} strokeWidth={1} />
                 </button>

@@ -397,15 +397,15 @@ export default function AccountPage() {
                                 İade / İptal Talebi
                             </h2>
                             <p style={{ marginBottom: '1rem', color: '#666', fontSize: '0.95rem', lineHeight: '1.5' }}>
-                                <span style={{ fontWeight: '600', color: '#000' }}>#{selectedOrderId}</span> numaralı siparişiniz için iade/iptal süreci <strong>Shopier</strong> güvencesiyle yürütülmektedir.
+                                <span style={{ fontWeight: '600', color: '#000' }}>#{selectedOrderId}</span> numaralı siparişiniz için iade talebiniz bize ulaştığında, <strong>Shopier Paneli</strong> üzerinden siparişinize özel bir <strong>İade Kargo Kodu</strong> oluşturulacaktır.
                                 <br /><br />
-                                Talebiniz incelendikten sonra, kayıtlı e-posta adresinize ve telefonunuza <strong>Shopier İade Kargo Kodu</strong> iletilecektir.
+                                Bu kod, kayıtlı iletişim bilgileriniz (SMS/E-mail) üzerinden tarafınıza iletilecektir.
                             </p>
 
                             <div style={{ backgroundColor: '#f0f7ff', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid #cce3ff', display: 'flex', gap: '10px', alignItems: 'start' }}>
                                 <Info size={20} color="#0066cc" style={{ marginTop: '2px', flexShrink: 0 }} />
                                 <p style={{ fontSize: '0.85rem', color: '#004c99', margin: 0 }}>
-                                    Shopier anlaşmalı kargo kodu ile ürününüzü <strong>ücretsiz</strong> olarak geri gönderebilirsiniz. Kodunuz onay sonrası size iletilecektir.
+                                    <strong>Önemli:</strong> Lütfen iade kargo kodu size ulaşmadan kargo şubesine gitmeyiniz. Kod ile gönderimleriniz <strong>ücretsizdir</strong> ve iade sürecini hızlandırır.
                                 </p>
                             </div>
 
@@ -416,7 +416,7 @@ export default function AccountPage() {
                                 // Simulate API call
                                 setTimeout(() => {
                                     setIsSubmittingReturn(false);
-                                    alert(`Talebiniz alınmıştır! Shopier iade kodunuz en kısa sürede SMS ve E-posta ile gönderilecektir.`);
+                                    alert(`Talebiniz alınmıştır! Shopier üzerinden iade kargo kodunuz oluşturulup size iletilecektir.`);
                                     setShowReturnModal(false);
                                 }, 1500);
                             }}>

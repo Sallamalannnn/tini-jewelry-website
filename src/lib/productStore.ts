@@ -174,19 +174,52 @@ export const deleteProduct = async (id: string) => {
 };
 
 // Search products by name, category, or description
+// Helper to normalize strings for search (Turkish char support)
+const normalizeForSearch = (text: string) => {
+    return text.toLocaleLowerCase('tr-TR')
+        .replace(/ğ/g, 'g')
+        .replace(/ü/g, 'u')
+        .replace(/ş/g, 's')
+        .replace(/ı/g, 'i')
+        .replace(/i̇/g, 'i')
+        .replace(/ö/g, 'o')
+        .replace(/ç/g, 'c');
+};
+
+// Search products by name, category, or description with fuzzy scoring
 export const searchProducts = async (query: string): Promise<Product[]> => {
     if (!query || query.trim().length < 2) return [];
 
     const allProducts = await getProducts();
-    const normalizedQuery = query.toLowerCase().trim();
+    const normalizedQuery = normalizeForSearch(query.trim());
+    const queryTokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
 
-    return allProducts.filter(product => {
-        const nameMatch = product.name?.toLowerCase().includes(normalizedQuery);
-        const categoryMatch = product.category?.toLowerCase().includes(normalizedQuery);
-        const colorMatch = product.color?.toLowerCase().includes(normalizedQuery);
-        const materialMatch = product.material?.toLowerCase().includes(normalizedQuery);
+    const scoredProducts = allProducts.map(product => {
+        let score = 0;
+        const pName = normalizeForSearch(product.name || '');
+        const pCategory = normalizeForSearch(product.category || '');
+        const pColor = normalizeForSearch(product.color || '');
+        const pMaterial = normalizeForSearch(product.material || '');
 
-        return nameMatch || categoryMatch || colorMatch || materialMatch;
+        // Check for exact phrase match (highest bonus)
+        if (pName.includes(normalizedQuery)) score += 10;
+        if (pCategory.includes(normalizedQuery)) score += 8;
+
+        // Check each token
+        queryTokens.forEach(token => {
+            if (pName.includes(token)) score += 4;
+            if (pCategory.includes(token)) score += 3;
+            if (pColor.includes(token)) score += 2;
+            if (pMaterial.includes(token)) score += 2;
+        });
+
+        return { product, score };
     });
+
+    // Filter out non-matching products and sort by score (descending)
+    return scoredProducts
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map(item => item.product);
 };
 

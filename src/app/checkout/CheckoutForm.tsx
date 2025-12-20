@@ -8,15 +8,49 @@ import styles from './page.module.css';
 export const CheckoutForm = () => {
     const { items, totalPrice } = useCart();
     const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        zip: ''
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        alert('Siparişiniz başarıyla alındı! (Demo)');
-        setLoading(false);
-        // İdeal senaryoda success sayfasına yönlendirme yapılır
+
+        try {
+            const response = await fetch('/api/checkout/shopier', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    items,
+                    customer: formData,
+                    totalPrice
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.url) {
+                // Redirect to Shopier payment page
+                window.location.href = data.url;
+            } else {
+                alert('Ödeme başlatılamadı: ' + (data.error || 'Bilinmeyen hata'));
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('Bir hata oluştu, lütfen tekrar deneyin.');
+            setLoading(false);
+        }
     };
 
     if (items.length === 0) {
@@ -36,49 +70,100 @@ export const CheckoutForm = () => {
             <div className={styles.formSection}>
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.section}>
-                        <h2 className={styles.sectionTitle}>Teslimat Adresi</h2>
+                        <h2 className={styles.sectionTitle}>Teslimat Bilgileri</h2>
+
+                        <div className={styles.row}>
+                            <div className={styles.field}>
+                                <label className={styles.label}>E-posta</label>
+                                <input
+                                    required
+                                    type="email"
+                                    name="email"
+                                    className={styles.input}
+                                    placeholder="ornek@mail.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className={styles.field}>
+                                <label className={styles.label}>Telefon</label>
+                                <input
+                                    required
+                                    type="tel"
+                                    name="phone"
+                                    className={styles.input}
+                                    placeholder="05XX XXX XX XX"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
                         <div className={styles.row}>
                             <div className={styles.field}>
                                 <label className={styles.label}>Ad</label>
-                                <input required className={styles.input} placeholder="Adınız" />
+                                <input
+                                    required
+                                    name="firstName"
+                                    className={styles.input}
+                                    placeholder="Adınız"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                />
                             </div>
                             <div className={styles.field}>
                                 <label className={styles.label}>Soyad</label>
-                                <input required className={styles.input} placeholder="Soyadınız" />
+                                <input
+                                    required
+                                    name="lastName"
+                                    className={styles.input}
+                                    placeholder="Soyadınız"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                />
                             </div>
                         </div>
+
                         <div className={styles.field}>
                             <label className={styles.label}>Adres</label>
-                            <input required className={styles.input} placeholder="Sokak, Mahalle, No" />
+                            <input
+                                required
+                                name="address"
+                                className={styles.input}
+                                placeholder="Sokak, Mahalle, No"
+                                value={formData.address}
+                                onChange={handleChange}
+                            />
                         </div>
+
                         <div className={styles.row}>
                             <div className={styles.field}>
                                 <label className={styles.label}>Şehir</label>
-                                <input required className={styles.input} placeholder="İstanbul" />
+                                <input
+                                    required
+                                    name="city"
+                                    className={styles.input}
+                                    placeholder="İstanbul"
+                                    value={formData.city}
+                                    onChange={handleChange}
+                                />
                             </div>
                             <div className={styles.field}>
                                 <label className={styles.label}>Posta Kodu</label>
-                                <input required className={styles.input} placeholder="34000" />
+                                <input
+                                    required
+                                    name="zip"
+                                    className={styles.input}
+                                    placeholder="34000"
+                                    value={formData.zip}
+                                    onChange={handleChange}
+                                />
                             </div>
                         </div>
                     </div>
 
-                    <div className={styles.section}>
-                        <h2 className={styles.sectionTitle}>Ödeme Bilgileri</h2>
-                        <div className={styles.field}>
-                            <label className={styles.label}>Kart Numarası</label>
-                            <input required className={styles.input} placeholder="0000 0000 0000 0000" maxLength={19} />
-                        </div>
-                        <div className={styles.row}>
-                            <div className={styles.field}>
-                                <label className={styles.label}>Son Kullanma Tarihi</label>
-                                <input required className={styles.input} placeholder="Ay/Yıl" />
-                            </div>
-                            <div className={styles.field}>
-                                <label className={styles.label}>CVC</label>
-                                <input required className={styles.input} placeholder="123" maxLength={3} />
-                            </div>
-                        </div>
+                    <div className={styles.infoBox}>
+                        <p>📢 Ödemenizi güvenli <strong>Shopier</strong> altyapısı ile tamamlayacaksınız.</p>
                     </div>
 
                     <Button type="submit" size="lg" className={styles.submitBtn} disabled={loading}>
@@ -113,6 +198,6 @@ export const CheckoutForm = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
